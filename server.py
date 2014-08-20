@@ -26,11 +26,16 @@ def index_view():
 
 @app.get('/state') 
 def get_state():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((TCP_IP, TCP_PORT))
-    s.send("pupuuu from russia")
-    data = s.recv(BUFFER_SIZE)
-    s.close()
+    data = ""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send("pupuuu from russia")
+        data = s.recv(BUFFER_SIZE)
+        s.close()
+    except:
+        print("socket error")
+
     return data
 
 # Static Routes
