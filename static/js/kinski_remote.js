@@ -37,9 +37,17 @@ var s, ControlWidget =
 
   get_state_and_update: function()
   {
+    ControlWidget.set_loading(true);
+
     $.getJSON(s.update_url, function(data){
       ControlWidget.update_ui_with_component(data[0]);
+      ControlWidget.set_loading(false);
     });       
+  },
+
+  set_loading: function(the_bool)
+  {
+    //TODO: implement
   },
 
   add_control_for_property: function(the_property)
@@ -58,17 +66,34 @@ var s, ControlWidget =
     });
 
     group.append(label);
+    
+    input_elem = $( "<input/>", {
+        "name": stripped_name,
+        "type": "text",
+        "class": "form-control input-md",
+        "value": the_property.value 
+    });
+    input_col = $("<div class='col-md-4'>").append(input_elem);
 
     switch(the_property.type)
     {
       case "string":
         console.log("adding: " + the_property.name);
-        input_elem = $( "<input/>", {
-        "name": stripped_name,
-        "type": "text",
-        "class": "form-control input-md"
-        }); 
+        input_elem.attr("type", "text");
 
+        break;
+
+      case "int":
+      case "uint":
+      case "float":
+      case "double":
+        input_elem.attr("type", "number");
+        break;
+
+      case "bool":
+        input_elem.attr("type", "checkbox");
+        input_elem.removeAttr('value');
+        input_elem.prop('checked', the_property.value);
         break;
 
       default:
@@ -77,7 +102,12 @@ var s, ControlWidget =
 
     if(input_elem != undefined)
     {
-      group.append(input_elem);
+      // add change event
+      input_elem.on("change", function(){
+          console.log(input_elem.attr("name") + " changed");
+      });
+
+      group.append(input_col);
       s.root_elem.append(group); 
     }
   }
