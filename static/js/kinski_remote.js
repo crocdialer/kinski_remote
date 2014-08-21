@@ -14,25 +14,13 @@ var s, ControlWidget =
 
   update_ui_with_component: function(the_component)
   {
-    list_obj = $( "<ul/>", {
-      "class": "my-new-list"
-    });
-    
     // change component name
     $("#control_form legend").html(the_component.name);
 
     $.each(the_component.properties, function(key, prop)
     {
       ControlWidget.add_control_for_property(prop);
-
-      tmp = $( "<li/>", 
-      {
-        html: prop.type+": "+ prop.name + ": " + prop.value
-      });
-    
-      list_obj.append(tmp)
     });
-    list_obj.appendTo( "body" );   
   },
 
   get_state_and_update: function()
@@ -78,9 +66,7 @@ var s, ControlWidget =
     switch(the_property.type)
     {
       case "string":
-        console.log("adding: " + the_property.name);
         input_elem.attr("type", "text");
-
         break;
 
       case "int":
@@ -94,6 +80,10 @@ var s, ControlWidget =
         input_elem.attr("type", "checkbox");
         input_elem.removeAttr('value');
         input_elem.prop('checked', the_property.value);
+        break;
+
+      case "vec4":
+        input_elem.attr("type", "color");
         break;
 
       default:
