@@ -30,7 +30,7 @@ def get_state():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
-        s.send("pupuuu from russia")
+        s.send("request_state")
         data = s.recv(BUFFER_SIZE)
         s.close()
     except:

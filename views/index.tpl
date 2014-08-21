@@ -66,11 +66,19 @@
             <div class="col-lg-12 text-center">
                 <h1>Kinski Remote</h1>
                 <p class="lead">Complete with pipi and pupu for every taste!</p>
-                <ul class="list-unstyled">
-                    <li>Bootstrap v3.2.0</li>
-                    <li>jQuery v1.11.0</li>
-                </ul>
             </div>
+        </div>
+        <!-- /.row -->
+        <div class="row">
+          <form id="control_form" class="form-horizontal">
+            <fieldset>
+
+            <!-- Form Name -->
+            <legend>Form Name</legend>
+
+            </fieldset>
+          </form>
+
         </div>
         <!-- /.row -->
 
