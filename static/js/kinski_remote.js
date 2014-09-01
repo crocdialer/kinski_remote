@@ -1,15 +1,12 @@
-var s, ControlWidget = 
+ControlWidget = 
 {
-  settings:
-  {
-    update_url: "http://" + location.host + "/state",
-    root_elem: $("#control_form fieldset")
-  },
-  
+  update_url: "http://" + location.host + "/state",
+  root_elem: $("#control_form fieldset"),
+  components: [],
+ 
   init: function()
   {
     console.log("init ControlWidget");
-    s = this.settings;
   },
 
   update_ui_with_component: function(the_component)
@@ -29,8 +26,9 @@ var s, ControlWidget =
     this.set_loading(true);
     var self = this;
 
-    $.getJSON(s.update_url, function(data)
+    $.getJSON(this.update_url, function(data)
     {
+      self.components = data;
       for(var i = 0; i < data.length; i++)
       {
         self.update_ui_with_component(data[i]);
@@ -129,7 +127,7 @@ var s, ControlWidget =
       });
 
       group.append(input_col);
-      s.root_elem.append(group); 
+      this.root_elem.append(group); 
     }
   },
 
@@ -137,7 +135,16 @@ var s, ControlWidget =
   {
     console.log(the_json_obj);
     var component_obj = [{"name" : "KinskiGL", "properties": [the_json_obj]}]
-    $.post(this.settings.update_url, JSON.stringify(component_obj), null, "json");
+    //$.post(this.update_url, JSON.stringify(component_obj), null, "json");
+
+    $.ajax({
+    type: "POST",
+    url: this.update_url,
+    data: JSON.stringify(component_obj),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: null,
+    failure: null}); 
   }
 };
 

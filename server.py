@@ -41,7 +41,8 @@ def get_state():
 @app.post('/state') 
 def set_state():
     data = request.body.read()
-    print data
+    #print request.json
+    print data 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
