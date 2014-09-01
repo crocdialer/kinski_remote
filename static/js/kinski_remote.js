@@ -16,20 +16,26 @@ var s, ControlWidget =
   {
     // change component name
     $("#control_form legend").html(the_component.name);
-
+    
+    var self = this;
     $.each(the_component.properties, function(key, prop)
     {
-      ControlWidget.add_control_for_property(prop);
+      self.add_control_for_property(prop);
     });
   },
 
   get_state_and_update: function()
   {
-    ControlWidget.set_loading(true);
+    this.set_loading(true);
+    var self = this;
 
-    $.getJSON(s.update_url, function(data){
-      ControlWidget.update_ui_with_component(data[0]);
-      ControlWidget.set_loading(false);
+    $.getJSON(s.update_url, function(data)
+    {
+      for(var i = 0; i < data.length; i++)
+      {
+        self.update_ui_with_component(data[i]);
+        self.set_loading(false);
+      }
     });       
   },
 
@@ -40,6 +46,7 @@ var s, ControlWidget =
 
   add_control_for_property: function(the_property)
   {
+    var self = this;
     var input_elem = undefined;
     var stripped_name = the_property.name.trim().replace(/ /g,'_');
 
@@ -56,6 +63,7 @@ var s, ControlWidget =
     group.append(label);
     
     input_elem = $( "<input/>", {
+        "id": stripped_name,
         "name": stripped_name,
         "type": "text",
         "class": "form-control input-md",
@@ -74,6 +82,7 @@ var s, ControlWidget =
       case "float":
       case "double":
         input_elem.attr("type", "number");
+        input_elem.val(Number(input_elem.val()));
         break;
 
       case "bool":
@@ -93,13 +102,42 @@ var s, ControlWidget =
     if(input_elem != undefined)
     {
       // add change event
-      input_elem.on("change", function(){
-          console.log(input_elem.attr("name") + " changed");
+      input_elem.on("change", function()
+      {
+        var changed_prop = the_property;
+        changed_prop.value = input_elem.val();
+
+        switch(the_property.type)
+        {
+          case "bool":
+          changed_prop.value = input_elem.prop('checked');
+          break;
+          
+          case "int":
+          case "uint":
+          case "float":
+          case "double":
+            changed_prop.value = Number(changed_prop.value);
+        break;
+
+          default:
+            break;
+        }
+        //input_elem.attr("name");
+
+        self.on_change(changed_prop);
       });
 
       group.append(input_col);
       s.root_elem.append(group); 
     }
+  },
+
+  on_change: function(the_json_obj)
+  {
+    console.log(the_json_obj);
+    var component_obj = [{"name" : "KinskiGL", "properties": [the_json_obj]}]
+    $.post(this.settings.update_url, JSON.stringify(component_obj), null, "json");
   }
 };
 

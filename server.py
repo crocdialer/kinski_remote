@@ -38,6 +38,20 @@ def get_state():
 
     return data
 
+@app.post('/state') 
+def set_state():
+    data = request.body.read()
+    print data
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send(data)
+        s.close()
+    except:
+        print("socket error")
+
+    return "poop"
+
 # Static Routes
 @app.get('/static/img/<filename:re:.*\.(jpg|jpeg|png|JPG|JPEG|PNG|svg|gif)>')
 def internal_images(filename):
@@ -58,4 +72,4 @@ def fonts(filename):
 # standalone server
 if __name__ == '__main__':
   # start server
-  run(app, host='0.0.0.0', port=8080, debug=True)
+  run(app, host='0.0.0.0', port=8080, debug=True, reloader=True)
