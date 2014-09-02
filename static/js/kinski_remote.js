@@ -11,13 +11,18 @@ ControlWidget =
 
   update_ui_with_component: function(the_component)
   {
+    var field_set = $("<fieldset></fieldset>");
+    field_set.append($("<legend/>").html(the_component.name));
+
+    $("#control_form").append(field_set);
+
     // change component name
-    $("#control_form legend").html(the_component.name);
+    //$("#control_form legend").html(the_component.name);
     
     var self = this;
     $.each(the_component.properties, function(key, prop)
     {
-      self.add_control_for_property(prop);
+      self.add_control_for_property(the_component.name, prop, field_set);
     });
   },
 
@@ -42,7 +47,7 @@ ControlWidget =
     //TODO: implement
   },
 
-  add_control_for_property: function(the_property)
+  add_control_for_property: function(the_component_name, the_property, root_elem)
   {
     var self = this;
     var input_elem = undefined;
@@ -123,18 +128,20 @@ ControlWidget =
         }
         //input_elem.attr("name");
 
-        self.on_change(changed_prop);
+        self.on_change(the_component_name, changed_prop);
       });
 
       group.append(input_col);
-      this.root_elem.append(group); 
+
+      var root = root_elem == undefined ? this.root_elem : root_elem; 
+      root.append(group); 
     }
   },
 
-  on_change: function(the_json_obj)
+  on_change: function(the_component_name, the_json_obj)
   {
     console.log(the_json_obj);
-    var component_obj = [{"name" : "KinskiGL", "properties": [the_json_obj]}]
+    var component_obj = [{"name" : the_component_name, "properties": [the_json_obj]}]
     //$.post(this.update_url, JSON.stringify(component_obj), null, "json");
 
     $.ajax({

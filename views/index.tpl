@@ -58,20 +58,15 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <h1>Kinski Remote</h1>
-                <p class="lead">Complete with pipi and pupu for every taste!</p>
             </div>
         </div>
         <!-- /.row -->
         <div class="row">
           <form id="control_form" class="form-horizontal">
-            <fieldset>
-
-            <!-- Form Name -->
-            <legend>Form Name</legend>
-
-            </fieldset>
+            <!--fieldset>
+              <legend>Form Name</legend>
+            </fieldset-->
           </form>
-
         </div>
         <!-- /.row -->
 
