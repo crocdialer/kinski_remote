@@ -11,14 +11,13 @@ ControlWidget =
 
   update_ui_with_component: function(the_component)
   {
-    var field_set = $("<fieldset></fieldset>");
-    field_set.append($("<legend/>").html(the_component.name));
-
+    var field_set = $("<fieldset></fieldset>").hide();
+    var legend = $("<legend/>").html(the_component.name);
+    $("#control_form").append($("<a>", {
+                                click: function(){ field_set.slideToggle();} 
+                              }).append(legend));
     $("#control_form").append(field_set);
 
-    // change component name
-    //$("#control_form legend").html(the_component.name);
-    
     var self = this;
     $.each(the_component.properties, function(key, prop)
     {
