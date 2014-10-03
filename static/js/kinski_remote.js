@@ -120,7 +120,19 @@ ControlWidget =
           case "float":
           case "double":
             changed_prop.value = Number(changed_prop.value);
-        break;
+            break;
+
+          case "vec2":
+          case "vec3":
+          case "mat3":
+          case "mat4":
+
+            // split comma separated values, form array
+            var ret_array = [];
+            var tmp = changed_prop.value.split(",");
+            $.each(tmp, function(index, elem){ ret_array.push(Number(elem)); });
+            changed_prop.value = ret_array; 
+            break;
 
           default:
             break;
