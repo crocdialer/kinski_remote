@@ -133,6 +133,19 @@ ControlWidget =
             $.each(tmp, function(index, elem){ ret_array.push(Number(elem)); });
             changed_prop.value = ret_array; 
             break;
+          
+          case "vec4":
+            if(typeof changed_prop.value == 'string' || 
+               changed_prop.value instanceof String)
+            {
+              // transform color-string (e.g. #FF23AB) to vec4 with values in range [0, 1]
+              var ret_array = [];
+              var tmp = [];
+              for(var i = 1; i < 6; i += 2){ tmp.push(changed_prop.value.substring(i, i + 2)); }
+              $.each(tmp, function(index, elem){ ret_array.push(parseInt(elem, 16) / 255.0); });
+              changed_prop.value = ret_array;
+            }
+            break;
 
           default:
             break;
