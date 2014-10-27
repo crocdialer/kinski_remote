@@ -13,6 +13,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/kinski_remote.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <style>
@@ -37,7 +38,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Start Poopstrap</a>
+                <a class="navbar-brand" href="/">Kinski Remote</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -54,13 +55,6 @@
 
     <!-- Page Content -->
     <div class="container">
-
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <h1>Kinski Remote</h1>
-            </div>
-        </div>
-        <!-- /.row -->
         <div class="row">
           <form id="control_form" class="form-horizontal">
             <!--fieldset>
@@ -69,7 +63,6 @@
           </form>
         </div>
         <!-- /.row -->
-
     </div>
     <!-- /.container -->
 
