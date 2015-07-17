@@ -46,6 +46,12 @@
                     <li>
                         <a href="/state">get state</a>
                     </li>
+                    <li>
+                        <a id="save" href="#">save</a>
+                    </li>
+                    <li>
+                        <a id="load" href="#">load</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

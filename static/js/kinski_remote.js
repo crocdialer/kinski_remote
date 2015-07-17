@@ -7,12 +7,28 @@ ControlWidget =
   init: function()
   {
     console.log("init ControlWidget");
+    
+    var self = this;
+
+    $( "#load" ).click(function() 
+    {
+      console.log("load settings");
+      $.get("/load");
+      self.get_state_and_update();
+    });
+    $( "#save" ).click(function() 
+    {
+      console.log("save settings");
+      $.get("/save");
+      self.get_state_and_update();
+    });
   },
 
   update_ui_with_component: function(the_component)
   {
     var field_set = $("<fieldset></fieldset>").hide();
     var legend = $("<legend/>").html(the_component.name);
+    $("#control_form").empty();
     $("#control_form").append($("<a>", {
                                 click: function(){ field_set.slideToggle();} 
                               }).append(legend));

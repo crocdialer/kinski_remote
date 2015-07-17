@@ -53,6 +53,34 @@ def set_state():
 
     return "poop"
 
+@app.get('/save') 
+def save_settings():
+    data = ""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send("save_settings")
+        data = s.recv(BUFFER_SIZE)
+        s.close()
+    except:
+        print("socket error")
+
+    return data
+
+@app.get('/load') 
+def load_settings():
+    data = ""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send("load_settings")
+        data = s.recv(BUFFER_SIZE)
+        s.close()
+    except:
+        print("socket error")
+
+    return data
+
 # Static Routes
 @app.get('/static/img/<filename:re:.*\.(jpg|jpeg|png|JPG|JPEG|PNG|svg|gif)>')
 def internal_images(filename):
