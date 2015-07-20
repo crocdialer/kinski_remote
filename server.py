@@ -7,7 +7,7 @@ Created on August 20, 2014
 
 import os, datetime, socket, sqlite3
 
-from bottle import route, run, template, view, Bottle
+from bottle import route, run, template, view, response, Bottle
 from bottle import get, post, request
 from bottle import static_file
 
@@ -17,6 +17,9 @@ app = Bottle()
 TCP_IP = '127.0.0.1'
 TCP_PORT = 33333
 BUFFER_SIZE = 16384
+
+# 2 MB
+IMG_BUFFER_SIZE = 2097152
 
 @app.get('/') 
 @app.get('/view') # or @route('/view')
@@ -78,6 +81,23 @@ def load_settings():
         s.close()
     except:
         print("socket error")
+
+    return data
+
+@app.get('/snapshot') 
+def generate_snapshot():
+    data = ""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send("generate_snapshot")
+        data = s.recv(IMG_BUFFER_SIZE)
+        s.close()
+    except:
+        print("socket error")
+    
+    response.set_header('Content-Type', "image/jpeg")
+    response.set_header("Content-Length", len(data))
 
     return data
 

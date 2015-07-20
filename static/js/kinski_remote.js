@@ -22,6 +22,13 @@ ControlWidget =
       $.get("/save");
       self.get_state_and_update();
     });
+    $( "#snapshot" ).click(function() 
+    {
+      console.log("generate snapshot");
+      $("#snapshot_img").attr("src","/snapshot");
+      $("#snapshot_img").show();
+    });
+    $("#snapshot_img").hide();
   },
 
   update_ui_with_component: function(the_component)

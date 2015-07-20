@@ -44,7 +44,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="/state">get state</a>
+                        <a id="snapshot" href="#">snapshot</a>
                     </li>
                     <li>
                         <a id="save" href="#">save</a>
@@ -58,9 +58,15 @@
         </div>
         <!-- /.container -->
     </nav>
-
+    
     <!-- Page Content -->
     <div class="container">
+        
+        <div class="row">
+          <!-- Snapshot image -->
+          <img src="#" id="snapshot_img" width="200px" height="125px" class="img-rounded img-responsive"/>
+        </div>
+
         <div class="row">
           <form id="control_form" class="form-horizontal">
             <!--fieldset>
