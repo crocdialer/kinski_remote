@@ -35,7 +35,6 @@ ControlWidget =
   {
     var field_set = $("<fieldset></fieldset>").hide();
     var legend = $("<legend/>").html(the_component.name);
-    $("#control_form").empty();
     $("#control_form").append($("<a>", {
                                 click: function(){ field_set.slideToggle();} 
                               }).append(legend));
@@ -50,6 +49,7 @@ ControlWidget =
 
   get_state_and_update: function()
   {
+    $("#control_form").empty();
     this.set_loading(true);
     var self = this;
 
