@@ -1,5 +1,5 @@
 # .htaccess file 
 AuthType Basic
 AuthName "Kinski Remote"
-AuthUserFile /Users/crocdialer/Sites/kinski_remote/.htusers 
+AuthUserFile /var/www/kinski_remote/.htusers 
 require user projektil crocdialer 
