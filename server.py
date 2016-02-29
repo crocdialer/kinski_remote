@@ -2,7 +2,7 @@
 '''
 kinski_remote
 Created on August 20, 2014
-@author: crocdialer@googlemail.com 
+@author: crocdialer@googlemail.com
 '''
 
 import os, datetime, socket, sqlite3
@@ -21,13 +21,13 @@ BUFFER_SIZE = 16384
 # 2 MB
 IMG_BUFFER_SIZE = 2097152
 
-@app.get('/') 
+@app.get('/')
 @app.get('/view') # or @route('/view')
 @view('index')
 def index_view():
     return dict()
 
-@app.get('/state') 
+@app.get('/state')
 def get_state():
     data = ""
     try:
@@ -41,11 +41,11 @@ def get_state():
 
     return data
 
-@app.post('/state') 
+@app.post('/state')
 def set_state():
     data = request.body.read()
     #print request.json
-    print data 
+    print data
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
@@ -56,7 +56,7 @@ def set_state():
 
     return "poop"
 
-@app.get('/save') 
+@app.get('/save')
 def save_settings():
     data = ""
     try:
@@ -70,7 +70,7 @@ def save_settings():
 
     return data
 
-@app.get('/load') 
+@app.get('/load')
 def load_settings():
     data = ""
     try:
@@ -84,7 +84,7 @@ def load_settings():
 
     return data
 
-@app.get('/snapshot') 
+@app.get('/snapshot')
 def generate_snapshot():
     data = ""
     try:
@@ -95,7 +95,7 @@ def generate_snapshot():
         s.close()
     except:
         print("socket error")
-    
+
     response.set_header('Content-Type', "image/jpeg")
     response.set_header("Content-Length", len(data))
 
@@ -109,6 +109,10 @@ def internal_images(filename):
 @app.get('/static/js/<filename:re:.*\.js>')
 def javascripts(filename):
     return static_file(filename, root='static/js')
+
+@app.get('/static/data/<filename:re:.*\.(json|xml)>')
+def data_files(filename):
+    return static_file(filename, root='static/data')
 
 @app.get('/static/css/<filename:re:.*\.css>')
 def stylesheets(filename):

@@ -13,7 +13,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/kinski_remote.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <style>
@@ -58,10 +58,10 @@
         </div>
         <!-- /.container -->
     </nav>
-    
+
     <!-- Page Content -->
     <div class="container">
-        
+
         <div class="row">
           <!-- Snapshot image -->
           <img src="#" id="snapshot_img" width="200px" height="125px" class="img-rounded img-responsive"/>
@@ -79,12 +79,12 @@
     <!-- /.container -->
 
     <!-- jQuery Version 1.11.0 -->
-    <script src="/static/js/jquery-1.11.0.js"></script>
+    <script src="/static/js/jquery-1.12.1.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/js/bootstrap.min.js"></script>
 
     <!-- our main script -->
-    <script src="/static/js/kinski_remote.js"></script>
+    <script src="/static/js/main.js"></script>
 
 </body>
