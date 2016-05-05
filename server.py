@@ -56,49 +56,18 @@ def set_state():
 
     return "poop"
 
-@app.get('/save')
-def save_settings():
+@app.get('/cmd/<the_cmd>')
+def execute_command(the_cmd):
+    print("executing command: '{}'".format(the_cmd))
     data = ""
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
-        s.send("save_settings")
+        s.send(str(the_cmd))
         data = s.recv(BUFFER_SIZE)
         s.close()
     except:
         print("socket error")
-
-    return data
-
-@app.get('/load')
-def load_settings():
-    data = ""
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((TCP_IP, TCP_PORT))
-        s.send("load_settings")
-        data = s.recv(BUFFER_SIZE)
-        s.close()
-    except:
-        print("socket error")
-
-    return data
-
-@app.get('/snapshot')
-def generate_snapshot():
-    data = ""
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((TCP_IP, TCP_PORT))
-        s.send("generate_snapshot")
-        data = s.recv(IMG_BUFFER_SIZE)
-        s.close()
-    except:
-        print("socket error")
-
-    response.set_header('Content-Type', "image/jpeg")
-    response.set_header("Content-Length", len(data))
-
     return data
 
 # Static Routes

@@ -64,21 +64,23 @@
 
         <div class="row">
           <!-- Snapshot image -->
-          <img src="#" id="snapshot_img" width="200px" height="125px" class="img-rounded img-responsive"/>
+          <!-- <img src="#" id="snapshot_img" width="200px" height="125px" class="img-rounded img-responsive"/> -->
         </div>
 
         <div class="row">
-          <form id="control_form" class="form-horizontal">
-            <!--fieldset>
-              <legend>Form Name</legend>
-            </fieldset-->
-          </form>
+          <div class="col-md-12">
+            <form id="control_form" class="form-horizontal">
+              <!--fieldset>
+                <legend>Form Name</legend>
+              </fieldset-->
+            </form>
+          </div>
         </div>
         <!-- /.row -->
     </div>
     <!-- /.container -->
 
-    <!-- jQuery Version 1.11.0 -->
+    <!-- jQuery Version 1.12.1 -->
     <script src="/static/js/jquery-1.12.1.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->

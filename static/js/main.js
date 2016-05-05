@@ -12,15 +12,14 @@ ControlWidget =
 
     $( "#load" ).click(function()
     {
-      console.log("load settings");
-      $.get("/load");
+      console.log("/cmd/load_settings");
+      $.get("/cmd/load_settings");
       self.get_state_and_update();
     });
     $( "#save" ).click(function()
     {
-      console.log("save settings");
-      $.get("/save");
-      self.get_state_and_update();
+      console.log("/cmd/save_settings");
+      $.get("/cmd/save_settings");
     });
     $( "#snapshot" ).click(function()
     {
