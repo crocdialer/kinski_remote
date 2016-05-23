@@ -170,6 +170,15 @@ ControlWidget =
             }
             break;
 
+          case "string_array":
+            // split comma separated values, form array
+            var ret_array = [];
+            var tmp = changed_prop.value.split(",");
+            $.each(tmp, function(index, elem){ ret_array.push(elem); });
+            changed_prop.value = ret_array;
+            console.log(ret_array);
+            break;
+
           default:
             break;
         }
