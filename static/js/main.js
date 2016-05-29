@@ -1,3 +1,14 @@
+function componentToHex(c)
+{
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b)
+{
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
 ControlWidget =
 {
   update_url: "http://" + location.host + "/state",
@@ -101,8 +112,8 @@ ControlWidget =
         "id": stripped_name,
         "name": stripped_name,
         "type": "text",
-        "class": "form-control input-md",
-        "value": the_property.value
+        "class": "form-control input-md"
+        // "value": the_property.value
     });
     input_col = $("<div class='col-md-4'>").append(input_elem);
 
@@ -110,6 +121,7 @@ ControlWidget =
     {
       case "string":
         input_elem.attr("type", "text");
+        input_elem.val(the_property.value);
         break;
 
       case "int":
@@ -128,9 +140,17 @@ ControlWidget =
 
       case "vec4":
         input_elem.attr("type", "color");
+
+        // convert to color-string
+        var hex_str = rgbToHex(parseInt(255 * the_property.value[0]),
+                               parseInt(255 * the_property.value[1]),
+                               parseInt(255 * the_property.value[2]));
+        input_elem.val(hex_str);
+        input_elem.attr("defaultValue", hex_str);
         break;
 
       default:
+        input_elem.val(the_property.value);
         break;
     }
 
