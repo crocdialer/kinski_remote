@@ -40,13 +40,12 @@ ControlWidget =
     });
     $("#snapshot_img").hide();
 
-    $("#cmd_box").keyup(function(event)
+    $("#cmd_box").keypress(function(event)
     {
-        event.preventDefault();
-        event.stopPropagation();
-
         if(event.keyCode == 13)
         {
+            event.preventDefault();
+            event.stopPropagation();
             $("#cmd_button").click();
             return false;
         }
