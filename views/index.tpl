@@ -43,16 +43,22 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <a id="snapshot" href="#">snapshot</a>
-                    </li>
-                    <li>
-                        <a id="save" href="#">save</a>
-                    </li>
-                    <li>
-                        <a id="load" href="#">load</a>
-                    </li>
+                    <li><a id="snapshot" href="#">snapshot</a></li>
+                    <li><a id="save" href="#">save</a></li>
+                    <li><a id="load" href="#">load</a></li>
                 </ul>
+                <div class="col-sm-4 col-md-4 pull-right">
+                    <form class="navbar-form">
+                        <div class="input-group">
+                            <input id="cmd_box" type="text" class="form-control" placeholder="send command ..." name="cmd_box">
+                            <div class="input-group-btn">
+                                <button id="cmd_button" class="btn btn-default" type="button">
+                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -80,8 +86,8 @@
     </div>
     <!-- /.container -->
 
-    <!-- jQuery Version 1.12.1 -->
-    <script src="/static/js/jquery-1.12.1.min.js"></script>
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.2.4.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/js/bootstrap.min.js"></script>

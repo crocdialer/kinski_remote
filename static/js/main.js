@@ -28,6 +28,17 @@ ControlWidget =
       $("#snapshot_img").show();
     });
     $("#snapshot_img").hide();
+
+    $("#cmd_string").keyup(function(event)
+    {
+        if(event.keyCode == 13){ $("#cmd_button").click(); }
+    });
+
+    $("#cmd_button").click(function()
+    {
+        var cmd = $("#cmd_string").val();
+        if(cmd){ $.get("/cmd/" + cmd); }
+    });
   },
 
   update_ui_with_component: function(the_component)
@@ -148,6 +159,7 @@ ControlWidget =
           case "vec3":
           case "mat3":
           case "mat4":
+          case "float_array":
 
             // split comma separated values, form array
             var ret_array = [];
@@ -176,7 +188,6 @@ ControlWidget =
             var tmp = changed_prop.value.split(",");
             $.each(tmp, function(index, elem){ ret_array.push(elem); });
             changed_prop.value = ret_array;
-            console.log(ret_array);
             break;
 
           default:

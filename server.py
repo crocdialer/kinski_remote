@@ -87,7 +87,7 @@ def data_files(filename):
 def stylesheets(filename):
     return static_file(filename, root='static/css')
 
-@app.get('/static/fonts/<filename:re:.*\.(eot|ttf|woff|svg)>')
+@app.get('/static/fonts/<filename:re:.*\.(eot|ttf|woff|woff2|svg)>')
 def fonts(filename):
     return static_file(filename, root='static/fonts')
 
