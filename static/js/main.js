@@ -136,7 +136,7 @@ ControlWidget =
       case "float":
       case "double":
         input_elem.attr("type", "number");
-        input_elem.val(Number(input_elem.val()));
+        input_elem.val(Number(the_property.value));
         break;
 
       case "bool":
