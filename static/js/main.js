@@ -40,15 +40,23 @@ ControlWidget =
     });
     $("#snapshot_img").hide();
 
-    $("#cmd_string").keyup(function(event)
+    $("#cmd_box").keyup(function(event)
     {
-        if(event.keyCode == 13){ $("#cmd_button").click(); }
+        event.preventDefault();
+        event.stopPropagation();
+
+        if(event.keyCode == 13)
+        {
+            $("#cmd_button").click();
+            return false;
+        }
     });
 
     $("#cmd_button").click(function()
     {
-        var cmd = $("#cmd_string").val();
+        var cmd = $("#cmd_box").val();
         if(cmd){ $.get("/cmd/" + cmd); }
+        console.log(cmd);
     });
   },
 
@@ -227,7 +235,7 @@ ControlWidget =
 
   on_change: function(the_component_name, the_json_obj)
   {
-    console.log(the_json_obj);
+    // console.log(the_json_obj);
     var component_obj = [{"name" : the_component_name, "properties": [the_json_obj]}]
     //$.post(this.update_url, JSON.stringify(component_obj), null, "json");
 

@@ -64,7 +64,7 @@ def execute_command(the_cmd):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
         s.send(str(the_cmd))
-        data = s.recv(BUFFER_SIZE)
+        # data = s.recv(BUFFER_SIZE)
         s.close()
     except:
         print("socket error")
