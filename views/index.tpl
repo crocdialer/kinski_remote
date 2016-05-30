@@ -48,7 +48,7 @@
                     <li><a id="load" href="#">load</a></li>
                 </ul>
                 <div class="col-sm-4 col-md-4 pull-right">
-                    <form class="navbar-form">
+                    <form class="navbar-form pull-right">
                         <div class="input-group">
                             <input id="cmd_box" type="text" class="form-control" placeholder="send command ...">
                             <div class="input-group-btn">
