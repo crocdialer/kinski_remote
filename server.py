@@ -33,11 +33,15 @@ def get_state():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
-        s.send("request_state")
+        s.send(bytearray("request_state", 'utf-8'))
         data = s.recv(BUFFER_SIZE)
         s.close()
-    except:
-        print("socket error")
+    except OSError as e:
+        if e.errno == os.errno.ECONNREFUSED:
+            pass# Handle the exception...
+        else:
+            print("socket error")
+        s.close()
 
     return data
 
@@ -51,9 +55,9 @@ def set_state():
         s.connect((TCP_IP, TCP_PORT))
         s.send(data)
         s.close()
-    except:
+    except OSError as e:
         print("socket error")
-
+        s.close()
     return "poop"
 
 @app.get('/cmd/<the_cmd>')
@@ -63,11 +67,12 @@ def execute_command(the_cmd):
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
-        s.send(str(the_cmd))
-        # data = s.recv(BUFFER_SIZE)
+        s.send(bytearray(the_cmd, 'utf-8'))
+        #data = s.recv(BUFFER_SIZE)
         s.close()
-    except:
+    except OSError as e:
         print("socket error")
+        s.close()
     return data
 
 # Static Routes
