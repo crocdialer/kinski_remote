@@ -5,7 +5,7 @@ Created on August 20, 2014
 @author: crocdialer@googlemail.com
 '''
 
-import os, datetime, socket, sqlite3
+import os, datetime, socket, select
 
 from bottle import route, run, template, view, response, Bottle
 from bottle import get, post, request
@@ -68,7 +68,12 @@ def execute_command(the_cmd):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
         s.send(bytearray(the_cmd, 'utf-8'))
-        #data = s.recv(BUFFER_SIZE)
+
+        s.setblocking(0)
+        timeout_in_seconds = 1.0
+        ready = select.select([s], [], [], timeout_in_seconds)
+        if ready[0]:
+            data = s.recv(BUFFER_SIZE)
         s.close()
     except OSError as e:
         print("socket error")
