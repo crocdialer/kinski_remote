@@ -26,7 +26,7 @@ def index_view():
 
 @app.get('/state')
 def get_state():
-    data = ""
+    data = b''
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
@@ -57,8 +57,8 @@ def set_state():
 
 @app.get('/cmd/<the_cmd>')
 def execute_command(the_cmd):
-    print("executing command: '{}'".format(the_cmd))
-    data = ""
+    print("generic command: '{}'".format(the_cmd))
+    data = b''
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
@@ -73,6 +73,7 @@ def execute_command(the_cmd):
         if e.errno == os.errno.ECONNREFUSED:
             print("could not connect with kinskiGL")
         else: print("socket error")
+
     s.close()
     return data
 
@@ -88,7 +89,7 @@ def recvall(sock, count):
 @app.get('/cmd/generate_snapshot')
 def generate_snapshot():
     print("generate_snapshot")
-    data = ""
+    data = b''
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
@@ -97,15 +98,19 @@ def generate_snapshot():
         # first 4 bytes contain message size as uint32_t
         tmp = s.recv(4)
         data_length, = struct.unpack('I', tmp)
-        print("data_length: {}".format(data_length))
 
         # now receive all bytes
         data = recvall(s, data_length)
+
+        if len(data) != data_length:
+            print("error: wrong datalength. expected: {} got: {}".format(data_length, len(data)))
         response.set_header('Content-type', 'image/png')
 
     except socket.error as e:
-        if e.errno == os.errno.ECONNREFUSED: pass
+        if e.errno == os.errno.ECONNREFUSED:
+            print("could not connect with kinskiGL")
         else: print("socket error")
+
     s.close()
     return data
 
