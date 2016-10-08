@@ -32,11 +32,10 @@ def get_state():
         s.connect((TCP_IP, TCP_PORT))
         s.send(bytearray("request_state", 'utf-8'))
         data = s.recv(BUFFER_SIZE)
-    except OSError as e:
+    except socket.error as e:
         if e.errno == os.errno.ECONNREFUSED:
-            pass# Handle the exception...
-        else:
-            print("socket error")
+            print("could not connect with kinskiGL")
+        else: print("socket error")
     s.close()
     return data
 
@@ -49,8 +48,10 @@ def set_state():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
         s.send(data)
-    except OSError as e:
-        print("socket error")
+    except socket.error as e:
+        if e.errno == os.errno.ECONNREFUSED:
+            print("could not connect with kinskiGL")
+        else: print("socket error")
     s.close()
     return "poop"
 
@@ -68,8 +69,10 @@ def execute_command(the_cmd):
         ready = select.select([s], [], [], timeout_in_seconds)
         if ready[0]:
             data = s.recv(BUFFER_SIZE)
-    except OSError as e:
-        print("socket error")
+    except socket.error as e:
+        if e.errno == os.errno.ECONNREFUSED:
+            print("could not connect with kinskiGL")
+        else: print("socket error")
     s.close()
     return data
 
@@ -85,6 +88,7 @@ def recvall(sock, count):
 @app.get('/cmd/generate_snapshot')
 def generate_snapshot():
     print("generate_snapshot")
+    data = ""
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
@@ -95,12 +99,14 @@ def generate_snapshot():
         data_length, = struct.unpack('I', tmp)
         print("data_length: {}".format(data_length))
 
+        # now receive all bytes
         data = recvall(s, data_length)
-    except OSError as e:
-        print("socket error")
-    s.close()
+        response.set_header('Content-type', 'image/png')
 
-    response.set_header('Content-type', 'image/png')
+    except socket.error as e:
+        if e.errno == os.errno.ECONNREFUSED: pass
+        else: print("socket error")
+    s.close()
     return data
 
 # Static Routes
