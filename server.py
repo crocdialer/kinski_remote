@@ -5,7 +5,7 @@ Created on August 20, 2014
 @author: crocdialer@googlemail.com
 '''
 
-import os, datetime, socket, select
+import os, datetime, socket, select, struct
 
 from bottle import route, run, template, view, response, Bottle
 from bottle import get, post, request
@@ -16,10 +16,7 @@ app = Bottle()
 
 TCP_IP = '127.0.0.1'
 TCP_PORT = 33333
-BUFFER_SIZE = 16384
-
-# 4 MB
-IMG_BUFFER_SIZE = 4194304
+BUFFER_SIZE = 65536
 
 @app.get('/')
 @app.get('/view') # or @route('/view')
@@ -88,21 +85,17 @@ def recvall(sock, count):
 @app.get('/cmd/generate_snapshot')
 def generate_snapshot():
     print("generate_snapshot")
-    data = ""
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
         s.send(bytearray("generate_snapshot", 'utf-8'))
-        s.setblocking(0)
-        timeout_in_seconds = 1.0
 
-        for i in range(20):
-            ready = select.select([s], [], [], timeout_in_seconds)
-            if ready[0]:
-                new_data = s.recv(IMG_BUFFER_SIZE)
-                if not new_data: break
-                data += new_data
+        # first 4 bytes contain message size as uint32_t
+        tmp = s.recv(4)
+        data_length, = struct.unpack('I', tmp)
+        print("data_length: {}".format(data_length))
 
+        data = recvall(s, data_length)
     except OSError as e:
         print("socket error")
     s.close()

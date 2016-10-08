@@ -43,7 +43,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a id="snapshot" href="#">snapshot</a></li>
+                    <li><a id="snapshot" href="/cmd/generate_snapshot">snapshot</a></li>
                     <li><a id="save" href="#">save</a></li>
                     <li><a id="load" href="#">load</a></li>
                 </ul>
