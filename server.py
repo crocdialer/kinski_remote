@@ -78,7 +78,7 @@ def execute_command(the_cmd):
     return data
 
 def recvall(sock, count):
-    sock.setblocking(1)
+    sock.settimeout(10)
     buf = b''
     while count:
         newbuf = sock.recv(count)
