@@ -105,11 +105,11 @@ def generate_snapshot():
 
         if len(data) != data_length:
             print("error: wrong datalength. expected: {} got: {}".format(data_length, len(data)))
-        response.set_header('Content-type', 'image/png')
+        response.set_header('Content-type', 'image/jpeg')
 
     except socket.error as e:
         if e.errno == os.errno.ECONNREFUSED:
-            print("could not connect with kinskiGL")
+            print("could not connect to an kinskiGL instance")
         else: print("socket error")
 
     s.close()
