@@ -71,6 +71,7 @@
         <div class="row">
           <!-- Snapshot image -->
           <!-- <img src="#" id="snapshot_img" width="200px" height="125px" class="img-rounded img-responsive"/> -->
+          <h3 id="log_line"/>
         </div>
 
         <div class="row">

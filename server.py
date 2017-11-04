@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''
 kinski_remote
 Created on August 20, 2014
@@ -10,6 +10,9 @@ import os, datetime, socket, select, struct
 from bottle import route, run, template, view, response, Bottle
 from bottle import get, post, request
 from bottle import static_file
+
+# gevent needed for server sent events
+from gevent import monkey; monkey.patch_all()
 
 # our Bottle app instance
 app = Bottle()
@@ -115,6 +118,58 @@ def generate_snapshot():
     s.close()
     return data
 
+##################### Server Sent Events ########################
+
+def sse_pack(d):
+    """Pack data in SSE format"""
+    buffer = ''
+    for k in ['retry','id','event','data']:
+        if k in d.keys():
+            buffer += '%s: %s\n' % (k, d[k])
+    return buffer + '\n'
+
+@get("/log_stream")
+def stream_generator():
+
+    dummy_data = "uuuh, there is nothing 2c"
+
+    # Keep event IDs consistent
+    event_id = 0
+
+    if 'Last-Event-Id' in request.headers:
+        event_id = int(request.headers['Last-Event-Id']) + 1
+
+    # Set up our message payload with a retry value in case of connection failure
+    # (that's also the polling interval to be used as fallback by our polyfill)
+    msg = {'retry': '2000'}
+
+    # Provide an initial data dump to each new client
+    response.headers['content-type'] = 'text/event-stream'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    msg.update(
+    {
+         'event': 'init',
+         'data' : "hello log_stream!\n",
+         'id'   : event_id
+    })
+    yield sse_pack(msg)
+
+    # Now give them deltas as they arrive (say, from a message broker)
+    event_id += 1
+    msg['event'] = 'delta'
+    while True:
+        # block until you get new data (from a queue, pub/sub, zmq, etc.)
+        msg.update(
+        {
+             'event': 'delta',
+             'data' : dummy_data + ": " + event_id,
+             'id'   : event_id
+        })
+        yield sse_pack(msg)
+        event_id += 1
+
+#######################################################################
+
 # Static Routes
 @app.get('/static/img/<filename:re:.*\.(jpg|jpeg|png|JPG|JPEG|PNG|svg|gif)>')
 def internal_images(filename):
@@ -139,4 +194,4 @@ def fonts(filename):
 # standalone server
 if __name__ == '__main__':
   # start server
-  run(app, host='0.0.0.0', port=8080, debug=True, reloader=True)
+  run(app, server='gevent', host='0.0.0.0', port=8080, debug=True, reloader=True)

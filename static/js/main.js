@@ -12,6 +12,8 @@ function rgbToHex(r, g, b)
 ControlWidget =
 {
   update_url: "http://" + location.host + "/state",
+  log_stream_url: "http://" + location.host + "/log_stream",
+  log_stream: undefined,
   root_elem: $("#control_form fieldset"),
   components: [],
 
@@ -57,6 +59,21 @@ ControlWidget =
         if(cmd){ $.get("/cmd/" + cmd); }
         console.log(cmd);
     });
+
+    this.log_stream = new EventSource(this.log_stream_url)
+
+    // if (conf.debug) console.log("Binding event source");
+
+    // this.log_stream.addEventListener('init', function(e)
+    // {
+    //     app.trigger("model:init", e.data);
+    // }, false);
+
+    this.log_stream.addEventListener('delta', function(e)
+    {
+        // $('log_line')
+        console.log(e.data);
+    }, false);
   },
 
   update_ui_with_component: function(the_component)
