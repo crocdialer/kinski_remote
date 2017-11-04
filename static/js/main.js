@@ -61,14 +61,6 @@ ControlWidget =
     });
 
     this.log_stream = new EventSource(this.log_stream_url)
-
-    // if (conf.debug) console.log("Binding event source");
-
-    // this.log_stream.addEventListener('init', function(e)
-    // {
-    //     app.trigger("model:init", e.data);
-    // }, false);
-
     this.log_stream.addEventListener('delta', function(e)
     {
         // $('log_line')

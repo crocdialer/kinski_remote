@@ -5,7 +5,7 @@ Created on August 20, 2014
 @author: crocdialer@googlemail.com
 '''
 
-import os, datetime, socket, select, struct
+import os, datetime, time, socket, select, struct
 
 from bottle import route, run, template, view, response, Bottle
 from bottle import get, post, request
@@ -128,7 +128,7 @@ def sse_pack(d):
             buffer += '%s: %s\n' % (k, d[k])
     return buffer + '\n'
 
-@get("/log_stream")
+@app.get("/log_stream")
 def stream_generator():
 
     dummy_data = "uuuh, there is nothing 2c"
@@ -159,10 +159,12 @@ def stream_generator():
     msg['event'] = 'delta'
     while True:
         # block until you get new data (from a queue, pub/sub, zmq, etc.)
+        time.sleep(1)
+
         msg.update(
         {
              'event': 'delta',
-             'data' : dummy_data + ": " + event_id,
+             'data' : dummy_data + ": " + str(event_id),
              'id'   : event_id
         })
         yield sse_pack(msg)
@@ -194,4 +196,4 @@ def fonts(filename):
 # standalone server
 if __name__ == '__main__':
   # start server
-  run(app, server='gevent', host='0.0.0.0', port=8080, debug=True, reloader=True)
+  run(app, server='gevent', host='0.0.0.0', port=8888, debug=True, reloader=True)
