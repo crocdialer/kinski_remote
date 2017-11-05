@@ -5,14 +5,14 @@ Created on August 20, 2014
 @author: crocdialer@googlemail.com
 '''
 
+# gevent needed for server sent events
+from gevent import monkey; monkey.patch_all()
+
 import os, datetime, time, socket, select, struct
 
 from bottle import route, run, template, view, response, Bottle
 from bottle import get, post, request
 from bottle import static_file
-
-# gevent needed for server sent events
-from gevent import monkey; monkey.patch_all()
 
 # our Bottle app instance
 app = Bottle()
@@ -146,25 +146,48 @@ def stream_generator():
     # Provide an initial data dump to each new client
     response.headers['content-type'] = 'text/event-stream'
     response.headers['Access-Control-Allow-Origin'] = '*'
+
     msg.update(
     {
          'event': 'init',
-         'data' : "hello log_stream!\n",
+         'data' : "hello log_stream! event_id: " + str(event_id) + "\n",
          'id'   : event_id
     })
     yield sse_pack(msg)
 
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    is_connected = False
+
+    try:
+        s.connect((TCP_IP, TCP_PORT))
+        is_connected = True
+        s.send(bytearray("log_stream", 'utf-8'))
+    except socket.error as e:
+        if e.errno == os.errno.ECONNREFUSED:
+            print("could not connect to an kinskiGL instance")
+        else: print("socket error")
+
     # Now give them deltas as they arrive (say, from a message broker)
     event_id += 1
-    msg['event'] = 'delta'
-    while True:
+    while is_connected:
         # block until you get new data (from a queue, pub/sub, zmq, etc.)
-        time.sleep(1)
+        # time.sleep(1)
+
+        buf = b''
+        new_byte = b''
+
+        while new_byte != b'\n':
+            try:
+                # receive 1 byte at a time
+                new_byte = sock.recv(1)
+                if new_byte: buf += new_byte
+            except socket.error as e:
+                is_connected = False
 
         msg.update(
         {
-             'event': 'delta',
-             'data' : dummy_data + ": " + str(event_id),
+             'event': 'new_log_line',
+             'data' : buf,
              'id'   : event_id
         })
         yield sse_pack(msg)

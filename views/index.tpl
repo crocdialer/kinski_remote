@@ -71,7 +71,7 @@
         <div class="row">
           <!-- Snapshot image -->
           <!-- <img src="#" id="snapshot_img" width="200px" height="125px" class="img-rounded img-responsive"/> -->
-          <h3 id="log_line"/>
+          <div class="col-md-12"><h3 id="log_line">POOP</h3></div>
         </div>
 
         <div class="row">

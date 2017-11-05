@@ -61,10 +61,26 @@ ControlWidget =
     });
 
     this.log_stream = new EventSource(this.log_stream_url)
-    this.log_stream.addEventListener('delta', function(e)
+
+    var log_func = function(e)
     {
-        // $('log_line')
+        $('#log_line').html(e.data);
         console.log(e.data);
+    };
+
+    this.log_stream.addEventListener('init', log_func, false);
+    this.log_stream.addEventListener('new_log_line', log_func, false);
+
+    this.log_stream.addEventListener('error', function(e)
+    {
+        if (e.readyState == EventSource.CLOSED)
+        {
+            console.log("log_stream: network error");
+        }
+        else if( e.readyState == EventSource.OPEN)
+        {
+            console.log("log_stream: connected");
+        }
     }, false);
   },
 
