@@ -131,8 +131,6 @@ def sse_pack(d):
 @app.get("/log_stream")
 def stream_generator():
 
-    dummy_data = "uuuh, there is nothing 2c"
-
     # Keep event IDs consistent
     event_id = 0
 
@@ -150,39 +148,43 @@ def stream_generator():
     msg.update(
     {
          'event': 'init',
-         'data' : "hello log_stream! event_id: " + str(event_id) + "\n",
+         'data' : "log_stream not connected... event_id: " + str(event_id) + "\n",
          'id'   : event_id
     })
     yield sse_pack(msg)
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    app_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     is_connected = False
 
     try:
-        s.connect((TCP_IP, TCP_PORT))
+        app_socket.connect((TCP_IP, TCP_PORT))
+        app_socket.send(bytearray("log_stream", 'utf-8'))
         is_connected = True
-        s.send(bytearray("log_stream", 'utf-8'))
     except socket.error as e:
         if e.errno == os.errno.ECONNREFUSED:
             print("could not connect to an kinskiGL instance")
         else: print("socket error")
 
+    # set non-blocking
+    timeout_secs = 2.0
+    app_socket.settimeout(timeout_secs)
+
     # Now give them deltas as they arrive (say, from a message broker)
     event_id += 1
     while is_connected:
-        # block until you get new data (from a queue, pub/sub, zmq, etc.)
-        # time.sleep(1)
 
         buf = b''
         new_byte = b''
 
-        while new_byte != b'\n':
+        while is_connected and new_byte != b'\n' and app_socket.fileno() >= 0:
             try:
                 # receive 1 byte at a time
-                new_byte = sock.recv(1)
+                new_byte = app_socket.recv(1)
                 if new_byte: buf += new_byte
+
             except socket.error as e:
                 is_connected = False
+                app_socket.close()
 
         msg.update(
         {
@@ -190,8 +192,11 @@ def stream_generator():
              'data' : buf,
              'id'   : event_id
         })
-        yield sse_pack(msg)
-        event_id += 1
+        if is_connected:
+            yield sse_pack(msg)
+            event_id += 1
+
+    app_socket.close()
 
 #######################################################################
 
