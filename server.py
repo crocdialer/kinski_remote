@@ -184,15 +184,14 @@ def stream_generator():
 
             except socket.error as e:
                 is_connected = False
-                app_socket.close()
 
-        msg.update(
-        {
-             'event': 'new_log_line',
-             'data' : buf,
-             'id'   : event_id
-        })
         if is_connected:
+            msg.update(
+            {
+                 'event': 'new_log_line',
+                 'data' : buf,
+                 'id'   : event_id
+            })
             yield sse_pack(msg)
             event_id += 1
 
