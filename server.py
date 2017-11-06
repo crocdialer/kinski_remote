@@ -182,8 +182,9 @@ def stream_generator():
                 new_byte = app_socket.recv(1)
                 if new_byte: buf += new_byte
 
-            except socket.error as e:
+            except:
                 is_connected = False
+                app_socket.close()
 
         if is_connected:
             msg.update(
@@ -193,9 +194,17 @@ def stream_generator():
                  'id'   : event_id
             })
             yield sse_pack(msg)
-            event_id += 1
 
-    app_socket.close()
+        else:
+            msg.update(
+            {
+                 'event': 'disconnect',
+                 'data' : "",
+                 'id'   : event_id
+            })
+            yield sse_pack(msg)
+
+        event_id += 1
 
 #######################################################################
 
