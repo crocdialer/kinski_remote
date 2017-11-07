@@ -71,6 +71,11 @@ ControlWidget =
     this.log_stream.addEventListener('init', log_func, false);
     this.log_stream.addEventListener('new_log_line', log_func, false);
 
+    this.log_stream.addEventListener('kinski_connected', function(e)
+    {
+        console.log("event: kinski_connected");
+    }, false);
+
     this.log_stream.addEventListener('error', function(e)
     {
         if (e.readyState == EventSource.CLOSED)

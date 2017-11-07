@@ -163,43 +163,59 @@ def stream_generator():
     except socket.error as e:
         if e.errno == os.errno.ECONNREFUSED:
             print("could not connect to an kinskiGL instance")
+            app_socket.close()
         else: print("socket error")
 
     # set non-blocking
-    timeout_secs = 2.0
-    app_socket.settimeout(timeout_secs)
+    timeout_secs = 1.0
+    # app_socket.settimeout(timeout_secs)
 
-    # Now give them deltas as they arrive (say, from a message broker)
     event_id += 1
+    buf = b''
+
     while is_connected:
 
-        buf = b''
-        new_byte = b''
+        msg.update(
+        {
+             'event': 'kinski_connected',
+             'data' : "",
+             'id'   : event_id
+        })
+        yield sse_pack(msg)
 
-        while is_connected and new_byte != b'\n' and app_socket.fileno() >= 0:
+        line_buf = b''
+        line_complete = False
+
+        # collect bytes till we see a newline character or a timeout occurs
+        while is_connected and not line_complete:
             try:
-                # receive 1 byte at a time
-                new_byte = app_socket.recv(1)
-                if new_byte: buf += new_byte
+                ready = select.select([app_socket], [], [], timeout_secs)
+                if ready[0]:
+                    data = app_socket.recv(BUFFER_SIZE)
+                    if data:
+                        buf += data
+                        end_pos = buf.find(b'\n')
+                        if end_pos > 0:
+                            end_pos += 1
+                            line_buf = buf[:end_pos]
+                            buf = buf[end_pos:]
+                            line_complete = True
 
-            except:
+                    else:
+                        is_connected = False
+                        app_socket.shutdown(socket.SHUT_RDWR)
+                        app_socket.close()
+
+            except (socket.error, socket.timeout) as e:
                 is_connected = False
+                app_socket.shutdown(socket.SHUT_RDWR)
                 app_socket.close()
 
-        if is_connected:
+        if line_complete:
             msg.update(
             {
                  'event': 'new_log_line',
-                 'data' : buf,
-                 'id'   : event_id
-            })
-            yield sse_pack(msg)
-
-        else:
-            msg.update(
-            {
-                 'event': 'disconnect',
-                 'data' : "",
+                 'data' : line_buf.decode("utf-8"),
                  'id'   : event_id
             })
             yield sse_pack(msg)
