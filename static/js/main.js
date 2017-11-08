@@ -16,6 +16,8 @@ ControlWidget =
   log_stream: undefined,
   root_elem: $("#control_form fieldset"),
   components: [],
+  backend_available: false,
+  timer_backend_alive: 0,
 
   init: function()
   {
@@ -64,18 +66,13 @@ ControlWidget =
 
     var log_func = function(e)
     {
+        self.on_keep_alive();
         $('#log_line').html(e.data);
         console.log(e.data);
     };
 
-    this.log_stream.addEventListener('init', log_func, false);
     this.log_stream.addEventListener('log', log_func, false);
-
-    this.log_stream.addEventListener('keep_alive', function(e)
-    {
-        console.log("keep_alive: " + e.data);
-    }, false);
-
+    this.log_stream.addEventListener('keep_alive', this.on_keep_alive, false);
     this.log_stream.addEventListener('error', function(e)
     {
         if (e.readyState == EventSource.CLOSED)
@@ -276,10 +273,35 @@ ControlWidget =
     dataType: "json",
     success: null,
     failure: null});
+  },
+
+  on_keep_alive: function(e)
+  {
+      var self = this;
+
+      if(this.timer_backend_alive != 0)
+      {
+          clearTimeout(this.timer_backend_alive);
+          this.timer_backend_alive = 0;
+      }
+
+      // create UI when backend becomes available
+      if(!this.backend_available){ ControlWidget.get_state_and_update(); }
+
+      if(e != undefined)
+        console.log("keep_alive: " + e.data);
+
+      this.backend_available = true;
+
+      self.timer_backend_alive = setTimeout(function()
+      {
+          this.backend_available = false;
+          ControlWidget.get_state_and_update();
+      }, 10000);
   }
 };
 
 $(document).ready(function(){
   ControlWidget.init();
-  ControlWidget.get_state_and_update();
+  // ControlWidget.get_state_and_update();
 });

@@ -160,8 +160,9 @@ def stream_generator():
 
     # set non-blocking
     timeout_secs = 5.0
-    # app_socket.setblocking(0)
-    app_socket.settimeout(timeout_secs)
+    app_socket.setblocking(0)
+    # app_socket.settimeout(timeout_secs)
+    err = 0
 
     while is_connected:
 
@@ -169,18 +170,16 @@ def stream_generator():
         line_complete = False
 
         try:
-            # ready = select.select([app_socket], [], [], timeout_secs)
-            # if len(ready[0]) > 0:
-            data = app_socket.recv(BUFFER_SIZE)
-            if data:
-                line_buf += data
-                line_complete = True
-
+            ready = select.select([app_socket], [], [], timeout_secs)
+            if len(ready[0]) > 0:
+                data = app_socket.recv(BUFFER_SIZE)
+                if data:
+                    line_buf += data
+                    line_complete = True
+                else: is_connected = False
         except (select.error, socket.error, socket.timeout) as e:
-            print("closing socket: {}".format(e))
+            err = e
             is_connected = False
-            app_socket.shutdown(socket.SHUT_RDWR)
-            app_socket.close()
 
         if line_complete:
             msg.update(
@@ -199,6 +198,14 @@ def stream_generator():
         yield sse_pack(msg)
 
         event_id += 1
+
+    print("closing socket: {}".format(err))
+
+    try:
+        app_socket.shutdown(socket.SHUT_RDWR)
+        app_socket.close()
+    except socket.error as e:
+        pass
 
 #######################################################################
 
