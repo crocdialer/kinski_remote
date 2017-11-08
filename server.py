@@ -145,14 +145,6 @@ def stream_generator():
     response.headers['content-type'] = 'text/event-stream'
     response.headers['Access-Control-Allow-Origin'] = '*'
 
-    msg.update(
-    {
-         'event': 'init',
-         'data' : "log_stream not connected... event_id: " + str(event_id) + "\n",
-         'id'   : event_id
-    })
-    yield sse_pack(msg)
-
     app_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     is_connected = False
 
@@ -167,58 +159,43 @@ def stream_generator():
         else: print("socket error")
 
     # set non-blocking
-    timeout_secs = 1.0
-    # app_socket.settimeout(timeout_secs)
-
-    event_id += 1
-    buf = b''
+    timeout_secs = 5.0
+    app_socket.settimeout(timeout_secs)
 
     while is_connected:
-
-        msg.update(
-        {
-             'event': 'kinski_connected',
-             'data' : "",
-             'id'   : event_id
-        })
-        yield sse_pack(msg)
 
         line_buf = b''
         line_complete = False
 
-        # collect bytes till we see a newline character or a timeout occurs
-        while is_connected and not line_complete:
-            try:
-                ready = select.select([app_socket], [], [], timeout_secs)
-                if ready[0]:
-                    data = app_socket.recv(BUFFER_SIZE)
-                    if data:
-                        buf += data
-                        end_pos = buf.find(b'\n')
-                        if end_pos > 0:
-                            end_pos += 1
-                            line_buf = buf[:end_pos]
-                            buf = buf[end_pos:]
-                            line_complete = True
+        try:
+            # ready = select.select([app_socket], [], [], timeout_secs)
+            # if ready[0]:
+            data = app_socket.recv(BUFFER_SIZE)
+            if data:
+                line_buf += data
+                line_complete = True
 
-                    else:
-                        is_connected = False
-                        app_socket.shutdown(socket.SHUT_RDWR)
-                        app_socket.close()
-
-            except (socket.error, socket.timeout) as e:
-                is_connected = False
-                app_socket.shutdown(socket.SHUT_RDWR)
-                app_socket.close()
+        except:
+            print("closing socket")
+            is_connected = False
+            app_socket.shutdown(socket.SHUT_RDWR)
+            app_socket.close()
 
         if line_complete:
             msg.update(
             {
-                 'event': 'new_log_line',
+                 'event': 'log',
                  'data' : line_buf.decode("utf-8"),
                  'id'   : event_id
             })
-            yield sse_pack(msg)
+        else:
+            msg.update(
+            {
+                 'event': 'keep_alive',
+                 'data' : str(event_id),
+                 'id'   : event_id
+            })
+        yield sse_pack(msg)
 
         event_id += 1
 

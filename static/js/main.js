@@ -69,11 +69,11 @@ ControlWidget =
     };
 
     this.log_stream.addEventListener('init', log_func, false);
-    this.log_stream.addEventListener('new_log_line', log_func, false);
+    this.log_stream.addEventListener('log', log_func, false);
 
-    this.log_stream.addEventListener('kinski_connected', function(e)
+    this.log_stream.addEventListener('keep_alive', function(e)
     {
-        console.log("event: kinski_connected");
+        console.log("keep_alive: " + e.data);
     }, false);
 
     this.log_stream.addEventListener('error', function(e)
