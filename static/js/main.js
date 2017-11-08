@@ -277,26 +277,29 @@ ControlWidget =
 
   on_keep_alive: function(e)
   {
-      var self = this;
+      var self = ControlWidget;
 
-      if(this.timer_backend_alive != 0)
+      if(self.timer_backend_alive != 0)
       {
-          clearTimeout(this.timer_backend_alive);
-          this.timer_backend_alive = 0;
+          clearTimeout(self.timer_backend_alive);
+          self.timer_backend_alive = 0;
       }
 
       // create UI when backend becomes available
-      if(!this.backend_available){ ControlWidget.get_state_and_update(); }
+      if(!self.backend_available)
+      {
+           self.get_state_and_update();
+      }
 
       if(e != undefined)
         console.log("keep_alive: " + e.data);
 
-      this.backend_available = true;
+      self.backend_available = true;
 
       self.timer_backend_alive = setTimeout(function()
       {
-          this.backend_available = false;
-          ControlWidget.get_state_and_update();
+          self.backend_available = false;
+          self.get_state_and_update();
       }, 10000);
   }
 };

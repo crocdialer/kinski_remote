@@ -188,15 +188,16 @@ def stream_generator():
                  'data' : line_buf.decode("utf-8"),
                  'id'   : event_id
             })
-        else:
+            yield sse_pack(msg)
+        elif is_connected:
             msg.update(
             {
                  'event': 'keep_alive',
                  'data' : str(event_id),
                  'id'   : event_id
             })
-        yield sse_pack(msg)
-
+            yield sse_pack(msg)
+        
         event_id += 1
 
     print("closing socket: {}".format(err))
