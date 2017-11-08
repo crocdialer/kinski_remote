@@ -160,6 +160,7 @@ def stream_generator():
 
     # set non-blocking
     timeout_secs = 5.0
+    # app_socket.setblocking(0)
     app_socket.settimeout(timeout_secs)
 
     while is_connected:
@@ -169,14 +170,14 @@ def stream_generator():
 
         try:
             # ready = select.select([app_socket], [], [], timeout_secs)
-            # if ready[0]:
+            # if len(ready[0]) > 0:
             data = app_socket.recv(BUFFER_SIZE)
             if data:
                 line_buf += data
                 line_complete = True
 
-        except:
-            print("closing socket")
+        except (select.error, socket.error, socket.timeout) as e:
+            print("closing socket: {}".format(e))
             is_connected = False
             app_socket.shutdown(socket.SHUT_RDWR)
             app_socket.close()
