@@ -181,6 +181,14 @@ def stream_generator():
             err = e
             is_connected = False
 
+        if not is_connected:
+            print("closing socket: {}".format(err))
+
+            try: app_socket.shutdown(socket.SHUT_RDWR)
+            except: print("could not shutdown socket")
+            try: app_socket.close()
+            except socket.error as e: print("could not close socket: {}".format(e))
+
         if line_complete:
             msg.update(
             {
@@ -197,16 +205,8 @@ def stream_generator():
                  'id'   : event_id
             })
             yield sse_pack(msg)
-        
+
         event_id += 1
-
-    print("closing socket: {}".format(err))
-
-    try:
-        app_socket.shutdown(socket.SHUT_RDWR)
-        app_socket.close()
-    except socket.error as e:
-        pass
 
 #######################################################################
 

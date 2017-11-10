@@ -111,6 +111,8 @@ ControlWidget =
     $.getJSON(this.update_url, function(data)
     {
       self.components = data;
+      if(data){ self.backend_available = true; }
+
       for(var i = 0; i < data.length; i++)
       {
         self.update_ui_with_component(data[i]);
@@ -294,8 +296,6 @@ ControlWidget =
       if(e != undefined)
         console.log("keep_alive: " + e.data);
 
-      self.backend_available = true;
-
       self.timer_backend_alive = setTimeout(function()
       {
           self.backend_available = false;
@@ -306,5 +306,5 @@ ControlWidget =
 
 $(document).ready(function(){
   ControlWidget.init();
-  // ControlWidget.get_state_and_update();
+  ControlWidget.get_state_and_update();
 });
