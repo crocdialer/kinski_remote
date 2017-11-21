@@ -84,6 +84,12 @@ ControlWidget =
             console.log("log_stream: connected");
         }
     }, false);
+
+    $(window).on('beforeunload', function()
+    {
+        console.log("closing log_stream event source");
+        self.log_stream.close();
+    });
   },
 
   update_ui_with_component: function(the_component)
@@ -110,8 +116,8 @@ ControlWidget =
 
     $.getJSON(this.update_url, function(data)
     {
+      self.backend_available = true;
       self.components = data;
-      if(data){ self.backend_available = true; }
 
       for(var i = 0; i < data.length; i++)
       {
@@ -292,6 +298,7 @@ ControlWidget =
       {
            self.get_state_and_update();
       }
+      self.backend_available = true;
 
       if(e != undefined)
         console.log("keep_alive: " + e.data);
@@ -306,5 +313,5 @@ ControlWidget =
 
 $(document).ready(function(){
   ControlWidget.init();
-  ControlWidget.get_state_and_update();
+  // ControlWidget.get_state_and_update();
 });

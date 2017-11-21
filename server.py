@@ -160,8 +160,8 @@ def stream_generator():
 
     # set non-blocking
     timeout_secs = 5.0
-    app_socket.setblocking(0)
-    # app_socket.settimeout(timeout_secs)
+    # app_socket.setblocking(0)
+    app_socket.settimeout(2 * timeout_secs)
     err = 0
 
     while is_connected:
