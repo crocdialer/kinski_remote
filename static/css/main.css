@@ -1,7 +1,15 @@
-body{
+body
+{
   color: white;
   background-color: black;
 }
-legend{
+
+legend
+{
   color: white;
+}
+
+#log_panel
+{
+    margin: 10px 0px;
 }

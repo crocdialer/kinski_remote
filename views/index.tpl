@@ -71,7 +71,11 @@
         <div class="row">
           <!-- Snapshot image -->
           <!-- <img src="#" id="snapshot_img" width="200px" height="125px" class="img-rounded img-responsive"/> -->
-          <div class="col-md-12"><h3 id="log_line">POOP</h3></div>
+          <div class="col-md-12">
+              <div id="log_panel">
+                  <p class="log_item">...</p>
+              </div>
+          </div>
         </div>
 
         <div class="row">

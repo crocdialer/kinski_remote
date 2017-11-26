@@ -67,7 +67,12 @@ ControlWidget =
     var log_func = function(e)
     {
         self.on_keep_alive();
-        $('#log_line').html(e.data);
+        var class_name = "log_item";
+        $('#log_panel').append($("<p/>").addClass(class_name).html(e.data));
+        var items = $('.' + class_name);
+
+        var overflow = items.length - 10;
+        for(var i = 0; i < overflow; ++i){ $(items[i]).remove(); }
         console.log(e.data);
     };
 
