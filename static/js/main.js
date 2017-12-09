@@ -318,5 +318,5 @@ ControlWidget =
 
 $(document).ready(function(){
   ControlWidget.init();
-  // ControlWidget.get_state_and_update();
+  ControlWidget.get_state_and_update();
 });
